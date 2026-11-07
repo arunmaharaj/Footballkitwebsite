@@ -24,14 +24,14 @@ export function FeaturedRail({ kits, onBrowse }: { kits: Kit[]; onBrowse: () => 
       featured.map((k) => ({
         id: k.id,
         name: k.name,
-        description: k.description,
+        description: k.description || `${k.team} · ${k.group ?? k.league} · ${money(k.price)}`,
         kind: "tee",
-        color: k.color,
+        color: k.color ?? "#9ca3af",
         trim: k.trim,
         image: asset(k.cutout),
         backImage: asset(k.cutoutBack),
         tag: money(k.price),
-        details: [k.team, k.season, k.inStock ? "In stock" : "Sold out"],
+        details: [k.team, k.group ?? k.league, k.season, k.inStock ? "In stock" : "Sold out"],
       })),
     [featured],
   );

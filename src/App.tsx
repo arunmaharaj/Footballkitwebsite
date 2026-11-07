@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { SHOP } from "@/config";
 import {
-  countBy, emptyFilters, filtersFromUrl, filtersToUrl, KITS, PRICE_BANDS, results, TYPE_LABEL, type Filters,
+  asset, countBy, emptyFilters, filtersFromUrl, filtersToUrl, KITS, LEAGUE_LOGOS, LEAGUES, PRICE_BANDS, results, TYPE_LABEL, type Filters,
 } from "@/lib/kits";
+import { cn } from "@/lib/utils";
+
+const PAGE = 48;
 import { Header } from "@/components/catalog/Header";
 import { LeagueTabs } from "@/components/catalog/LeagueTabs";
 import { FeaturedRail } from "@/components/catalog/FeaturedRail";
@@ -17,6 +20,7 @@ export default function App() {
   const [filters, setFilters] = useState<Filters>(() => filtersFromUrl(window.location.search));
   const [kitId, setKitId] = useState<string | null>(() => new URLSearchParams(window.location.search).get("kit"));
   const [drawer, setDrawer] = useState(false);
+  const [shown, setShown] = useState(PAGE);
   const catalogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { history.replaceState(null, "", filtersToUrl(filters, kitId)); }, [filters, kitId]);
@@ -26,23 +30,30 @@ export default function App() {
   const list = useMemo(() => results(KITS, filters), [filters]);
   const leagues = useMemo(() => {
     const counts = countBy(KITS, { ...filters, teams: [] }, "league", (k) => k.league);
-    return [...new Set(KITS.map((k) => k.league))]
-      .map((name) => ({ name, count: counts.get(name) ?? 0 }))
-      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    return LEAGUES.map((name) => ({ name, count: counts.get(name) ?? 0 }));
   }, [filters]);
-  const leagueTotal = useMemo(() => results(KITS, { ...filters, league: "", teams: [] }).length, [filters]);
+  const leagueTotal = useMemo(() => results(KITS, { ...filters, league: "", group: "", teams: [] }).length, [filters]);
+  const groups = useMemo(() => {
+    if (!filters.league) return [];
+    const counts = countBy(KITS, { ...filters, teams: [] }, "group", (k) => k.group ?? "");
+    return [...new Set(KITS.filter((k) => k.league === filters.league && k.group).map((k) => k.group!))].map((name) => ({ name, count: counts.get(name) ?? 0 }));
+  }, [filters]);
+  useEffect(() => { setShown(PAGE); }, [filters]);
 
   const update = useCallback((patch: Partial<Filters>) => setFilters((f) => ({ ...f, ...patch })), []);
   const toggle = (key: ListKey, value: string) =>
     setFilters((f) => ({ ...f, [key]: f[key].includes(value) ? f[key].filter((v) => v !== value) : [...f[key], value] }));
   const setLeague = (league: string) =>
-    setFilters((f) => ({ ...f, league, teams: league ? f.teams.filter((t) => KITS.some((k) => k.team === t && k.league === league)) : f.teams }));
+    setFilters((f) => ({ ...f, league, group: "", teams: league ? f.teams.filter((t) => KITS.some((k) => k.team === t && k.league === league)) : f.teams }));
+  const setGroup = (group: string) =>
+    setFilters((f) => ({ ...f, group, teams: group ? f.teams.filter((t) => KITS.some((k) => k.team === t && k.group === group)) : f.teams }));
   const clearAll = () => setFilters((f) => ({ ...emptyFilters(), sort: f.sort }));
   const scrollToCatalog = () => catalogRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   const pills: { label: string; remove: () => void }[] = [
     ...(filters.q ? [{ label: `“${filters.q}”`, remove: () => update({ q: "" }) }] : []),
-    ...(filters.league ? [{ label: filters.league, remove: () => update({ league: "" }) }] : []),
+    ...(filters.league ? [{ label: filters.league, remove: () => update({ league: "", group: "" }) }] : []),
+    ...(filters.group ? [{ label: filters.group, remove: () => update({ group: "" }) }] : []),
     ...filters.teams.map((t) => ({ label: t, remove: () => toggle("teams", t) })),
     ...filters.types.map((t) => ({ label: TYPE_LABEL[t] ?? t, remove: () => toggle("types", t) })),
     ...filters.sizes.map((s) => ({ label: `Size ${s}`, remove: () => toggle("sizes", s) })),
@@ -50,7 +61,7 @@ export default function App() {
     ...(filters.inStock ? [{ label: "In stock", remove: () => update({ inStock: false }) }] : []),
   ];
   const sideFilterCount = filters.teams.length + filters.types.length + filters.sizes.length + filters.prices.length + Number(filters.inStock);
-  const heading = filters.teams.length === 1 ? `${filters.teams[0]} kits` : filters.league ? `${filters.league} kits` : filters.q ? `Results for “${filters.q}”` : "All kits";
+  const heading = filters.teams.length === 1 ? `${filters.teams[0]} kits` : filters.group ? `${filters.group} kits` : filters.league ? `${filters.league} kits` : filters.q ? `Results for “${filters.q}”` : "All kits";
   const openKit = KITS.find((k) => k.id === kitId) ?? null;
   const browsing = pills.length > 0;
 
@@ -75,10 +86,11 @@ export default function App() {
           onClose={() => setDrawer(false)}
         />
 
-        <main>
+        <main className="min-w-0">
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
             <button type="button" onClick={clearAll} className="underline underline-offset-2 hover:text-foreground">All kits</button>
-            {filters.league && (<><span className="text-input">/</span><button type="button" onClick={() => update({ teams: [] })} className="underline underline-offset-2 hover:text-foreground">{filters.league}</button></>)}
+            {filters.league && (<><span className="text-input">/</span><button type="button" onClick={() => update({ teams: [], group: "" })} className="underline underline-offset-2 hover:text-foreground">{filters.league}</button></>)}
+            {filters.group && (<><span className="text-input">/</span><button type="button" onClick={() => update({ teams: [] })} className="underline underline-offset-2 hover:text-foreground">{filters.group}</button></>)}
             {filters.teams.length === 1 && (<><span className="text-input">/</span><span>{filters.teams[0]}</span></>)}
           </nav>
           <div className="mb-2.5 mt-1.5 flex flex-wrap items-center justify-between gap-3">
@@ -105,6 +117,28 @@ export default function App() {
             </div>
           </div>
 
+          {groups.length > 1 && (
+            <div className="-mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:flex-wrap lg:px-0" role="group" aria-label={`${filters.league} groups`}>
+              {[{ name: "", count: groups.reduce((n, g) => n + g.count, 0) }, ...groups].map((g) => {
+                const logo = g.name ? LEAGUE_LOGOS[g.name] : undefined;
+                const on = filters.group === g.name;
+                return (
+                  <button
+                    key={g.name || "all"}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => setGroup(g.name)}
+                    className={cn("flex h-10 shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium", on ? "border-foreground bg-foreground text-background" : "border-input bg-card hover:border-foreground")}
+                  >
+                    {logo && <img src={asset(logo)} alt="" className={cn("size-5 object-contain", on && "rounded-sm bg-white p-px")} />}
+                    {g.name || `All ${filters.league}`}
+                    <span className={cn("text-xs", on ? "text-background/70" : "text-muted-foreground")}>{g.count}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {pills.length > 0 && (
             <div className="flex flex-wrap gap-1.5" aria-live="polite">
               {pills.map((p) => (
@@ -119,9 +153,18 @@ export default function App() {
 
           {list.length ? (
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-[repeat(auto-fill,minmax(210px,1fr))] sm:gap-4">
-              {list.map((k) => <KitCard key={k.id} kit={k} onOpen={setKitId} />)}
+              {list.slice(0, shown).map((k) => <KitCard key={k.id} kit={k} onOpen={setKitId} />)}
             </div>
-          ) : (
+          ) : null}
+          {list.length > shown && (
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <p className="text-sm text-muted-foreground">Showing {shown} of {list.length}</p>
+              <button type="button" onClick={() => setShown((n) => n + PAGE)} className="h-11 rounded-full border border-input bg-card px-6 text-sm font-semibold hover:border-foreground">
+                Show more kits
+              </button>
+            </div>
+          )}
+          {list.length ? null : (
             <div className="py-12 text-center text-muted-foreground">
               <p>No kits match those filters.</p>
               <button type="button" onClick={clearAll} className="mt-3 h-10 rounded-full border border-input bg-card px-4 text-sm font-semibold text-foreground">Clear all filters</button>

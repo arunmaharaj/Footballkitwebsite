@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" role="img" aria-label="Kit illustration">
-<defs><clipPath id="b"><path d="M60 40 L95 22 Q120 38 145 22 L180 40 L222 78 L196 112 L178 100 L178 238 L62 238 L62 100 L44 112 L18 78 Z"/></clipPath></defs>
-<rect width="240" height="260" fill="none"/>
-<g clip-path="url(#b)"><rect width="240" height="260" fill="#f36c21"/>
-<path d="M0 0 L62 0 L62 260 L0 260Z M178 0 L240 0 L240 260 L178 260Z" fill="#f36c21"/>
-<path d="M18 78 L44 112 L50 104 L26 70Z M222 78 L196 112 L190 104 L214 70Z" fill="#ffffff"/></g>
-<path d="M95 22 Q120 50 145 22" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
-<path d="M60 40 L95 22 Q120 38 145 22 L180 40 L222 78 L196 112 L178 100 L178 238 L62 238 L62 100 L44 112 L18 78 Z" fill="none" stroke="#111827" stroke-opacity=".2" stroke-width="2"/>
-</svg>

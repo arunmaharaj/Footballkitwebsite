@@ -1,18 +1,23 @@
 import raw from "../../kits.json";
+import logos from "../../logos.json";
 import { SHOP } from "@/config";
 
-export type KitType = "home" | "away" | "third" | "retro";
+export type KitType = "home" | "away" | "third" | "special" | "retro";
 
 export interface Kit {
   id: string;
   name: string;
   team: string;
   league: string;
+  /** Sub-group inside a league tab, e.g. "Eredivisie" under Other Leagues or "CONMEBOL" under International. */
+  group?: string;
   season: string;
   type: KitType | string;
   price: number;
   sizes: string[];
   image?: string;
+  /** Optional photo of the back of the shirt. */
+  imageBack?: string;
   /** Optional transparent cut-out photo for the featured rail (200 × 310 canvas). */
   cutout?: string;
   cutoutBack?: string;
@@ -26,7 +31,11 @@ export interface Kit {
   order: number;
 }
 
-export const TYPE_LABEL: Record<string, string> = { home: "Home", away: "Away", third: "Third", retro: "Retro" };
+export const TYPE_LABEL: Record<string, string> = { home: "Home", away: "Away", third: "Third", special: "Special", retro: "Retro" };
+
+/** Club badges and league logos (logos.json). */
+export const BADGES: Record<string, string> = (logos as { badges: Record<string, string> }).badges ?? {};
+export const LEAGUE_LOGOS: Record<string, string> = (logos as { leagues: Record<string, string> }).leagues ?? {};
 
 export const PRICE_BANDS = [
   { id: "u400", label: "Under $400", test: (p: number) => p < 400 },
@@ -61,12 +70,16 @@ export const KITS: Kit[] = (raw as RawKit[])
     team: k.team || "Other",
   }));
 
+/** Leagues in the order they first appear in kits.json. */
+export const LEAGUES = [...new Set(KITS.map((k) => k.league))];
+
 export const money = (n: number) => `TT$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 
 // ---------- Filters ----------
 export interface Filters {
   q: string;
   league: string;
+  group: string;
   teams: string[];
   types: string[];
   sizes: string[];
@@ -75,15 +88,16 @@ export interface Filters {
   sort: "featured" | "price-asc" | "price-desc" | "team" | "newest";
 }
 
-export const emptyFilters = (): Filters => ({ q: "", league: "", teams: [], types: [], sizes: [], prices: [], inStock: false, sort: "featured" });
+export const emptyFilters = (): Filters => ({ q: "", league: "", group: "", teams: [], types: [], sizes: [], prices: [], inStock: false, sort: "featured" });
 
-export type FilterKey = "league" | "teams" | "types" | "sizes" | "prices" | "inStock";
+export type FilterKey = "league" | "group" | "teams" | "types" | "sizes" | "prices" | "inStock";
 
 /** Does a kit pass every filter? `skip` ignores one group, so each group can show how many kits it would add. */
 export function matches(k: Kit, f: Filters, skip?: FilterKey) {
   const q = f.q.trim().toLowerCase();
   if (q && ![k.name, k.team, k.league, k.season, k.type, k.description].join(" ").toLowerCase().includes(q)) return false;
   if (skip !== "league" && f.league && k.league !== f.league) return false;
+  if (skip !== "league" && skip !== "group" && f.group && k.group !== f.group) return false;
   if (skip !== "teams" && f.teams.length && !f.teams.includes(k.team)) return false;
   if (skip !== "types" && f.types.length && !f.types.includes(k.type)) return false;
   if (skip !== "sizes" && f.sizes.length && !k.sizes.some((s) => f.sizes.includes(s))) return false;
@@ -101,7 +115,7 @@ export function countBy(kits: Kit[], f: Filters, skip: FilterKey, key: (k: Kit) 
   return counts;
 }
 
-const seasonYear = (s: string) => parseInt(String(s).slice(0, 4), 10) || 0;
+export const seasonYear = (s: string) => parseInt(String(s).slice(0, 4), 10) || 0;
 const SORTS: Record<Filters["sort"], (a: Kit, b: Kit) => number> = {
   featured: (a, b) => Number(b.inStock) - Number(a.inStock) || a.order - b.order,
   "price-asc": (a, b) => a.price - b.price || a.order - b.order,
@@ -120,6 +134,7 @@ export function filtersFromUrl(search: string): Filters {
   return {
     q: p.get("q") || "",
     league: p.get("league") || "",
+    group: p.get("group") || "",
     teams: list("team"),
     types: list("type"),
     sizes: list("size"),
@@ -133,6 +148,7 @@ export function filtersToUrl(f: Filters, kitId?: string | null) {
   const p = new URLSearchParams();
   if (f.q) p.set("q", f.q);
   if (f.league) p.set("league", f.league);
+  if (f.group) p.set("group", f.group);
   if (f.teams.length) p.set("team", f.teams.join(","));
   if (f.types.length) p.set("type", f.types.join(","));
   if (f.sizes.length) p.set("size", f.sizes.join(","));

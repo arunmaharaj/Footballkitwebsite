@@ -1,14 +1,15 @@
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
-import { countBy, PRICE_BANDS, sortSizes, TYPE_LABEL, type Filters, type Kit } from "@/lib/kits";
+import { asset, BADGES, countBy, LEAGUE_LOGOS, PRICE_BANDS, sortSizes, TYPE_LABEL, type Filters, type Kit } from "@/lib/kits";
 import { cn } from "@/lib/utils";
 
 type ListKey = "teams" | "types" | "sizes" | "prices";
 
-function Check({ label, count, checked, onChange }: { label: string; count: number; checked: boolean; onChange: () => void }) {
+function Check({ label, count, checked, onChange, icon }: { label: string; count: number; checked: boolean; onChange: () => void; icon?: string }) {
   return (
     <label className={cn("flex cursor-pointer items-center gap-2.5 rounded-md px-1 py-1.5 text-sm hover:bg-secondary", !count && !checked && "opacity-45")}>
       <input type="checkbox" checked={checked} onChange={onChange} className="size-4 shrink-0 accent-foreground" />
+      {icon && <img src={asset(icon)} alt="" loading="lazy" className="size-5 shrink-0 object-contain" />}
       <span className="flex-1">{label}</span>
       <span className="text-xs text-muted-foreground">{count}</span>
     </label>
@@ -38,22 +39,24 @@ export function FilterPanel({ kits, filters, resultCount, open, onToggle, onInSt
 
   const teamGroups = useMemo(() => {
     const counts = countBy(kits, filters, "teams", (k) => k.team);
-    const pool = kits.filter((k) => !filters.league || k.league === filters.league);
+    const pool = kits.filter((k) => (!filters.league || k.league === filters.league) && (!filters.group || k.group === filters.group));
     const q = teamQ.trim().toLowerCase();
     const byLeague = new Map<string, string[]>();
     [...new Set(pool.map((k) => k.team))].sort().forEach((team) => {
       if (q && !team.toLowerCase().includes(q) && !filters.teams.includes(team)) return;
-      const league = pool.find((k) => k.team === team)!.league;
+      const kit = pool.find((k) => k.team === team)!;
+      const league = kit.group ?? kit.league;
       byLeague.set(league, [...(byLeague.get(league) ?? []), team]);
     });
-    return { counts, groups: [...byLeague.entries()].sort(([a], [b]) => a.localeCompare(b)) };
+    const order = [...new Set(pool.map((k) => k.group ?? k.league))];
+    return { counts, groups: [...byLeague.entries()].sort(([a], [b]) => order.indexOf(a) - order.indexOf(b)) };
   }, [kits, filters, teamQ]);
 
   const typeCounts = countBy(kits, filters, "types", (k) => k.type);
   const sizeCounts = countBy(kits, filters, "sizes", (k) => k.sizes);
   const priceCounts = countBy(kits, filters, "prices", (k) => PRICE_BANDS.filter((b) => b.test(k.price)).map((b) => b.id));
   const allSizes = sortSizes([...new Set(kits.flatMap((k) => k.sizes))]);
-  const grouped = !filters.league && teamGroups.groups.length > 1;
+  const grouped = teamGroups.groups.length > 1;
 
   return (
     <>
@@ -86,9 +89,14 @@ export function FilterPanel({ kits, filters, resultCount, open, onToggle, onInSt
               {teamGroups.groups.length === 0 && <p className="text-sm text-muted-foreground">No teams found</p>}
               {teamGroups.groups.map(([league, teams]) => (
                 <div key={league}>
-                  {grouped && <p className="mb-0.5 mt-2 text-xs font-semibold text-muted-foreground first:mt-0">{league}</p>}
+                  {grouped && (
+                    <p className="mb-0.5 mt-3 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                      {LEAGUE_LOGOS[league] && <img src={asset(LEAGUE_LOGOS[league])} alt="" className="size-4 object-contain" />}
+                      {league}
+                    </p>
+                  )}
                   {teams.map((t) => (
-                    <Check key={t} label={t} count={teamGroups.counts.get(t) ?? 0} checked={filters.teams.includes(t)} onChange={() => onToggle("teams", t)} />
+                    <Check key={t} label={t} icon={BADGES[t]} count={teamGroups.counts.get(t) ?? 0} checked={filters.teams.includes(t)} onChange={() => onToggle("teams", t)} />
                   ))}
                 </div>
               ))}

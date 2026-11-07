@@ -39,12 +39,26 @@ Edit `src/config.ts`: shop name, tagline, WhatsApp number (digits only, starting
 |---|---|
 | `id` | Unique; lowercase letters, numbers and dashes. |
 | `league`, `team` | New leagues and teams appear in the tabs and filters automatically. |
-| `type` | `home`, `away`, `third` or `retro`. |
+| `group` | Optional sub-group inside a league tab, e.g. `"MLS"` under Other Leagues or `"CONMEBOL"` under International. |
+| `type` | `home`, `away`, `third`, `special` (anniversary, centenary, pre-season…) or `retro`. |
 | `price` | Number in TTD (no `$`). |
 | `inStock` | `false` shows a "Sold out" label and an "Ask about restock" button. |
 | `featured` | Optional. `true` hangs the kit on the rail (first 8 are used). |
 | `color`, `trim` | Optional. Shirt colours used to draw the kit on the rail. |
+| `imageBack` | Optional photo of the back; shown on hover and with the Front/Back switch. |
 | `cutout`, `cutoutBack` | Optional. Transparent cut-out photos (200×310 portrait canvas) to show on the rail instead of the drawing. |
+
+Club badges and league logos are listed in `logos.json` (team or league name → image path).
+
+### Importing a folder of photos
+
+`tools/import_photos.py` turns a folder of photos named like `arsenal-fc-2026-27-home-kit.jpg` (front) and `arsenal-fc-2026-27-home-kit (1).jpg` (back) into web-sized images, rail cut-outs and a fresh `kits.json`. New teams need a line in its team table. Prices it writes are placeholders.
+
+```bash
+python3 tools/import_photos.py path/to/photos .
+```
+
+**Test photos are not committed.** `public/images/test-photos/` is git-ignored because this repository is public.
 
 A missing comma or quote breaks the build; paste the file into https://jsonlint.com if unsure. Netlify shows the error and keeps the old version live.
 
