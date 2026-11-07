@@ -1,0 +1,33 @@
+# Builds the site and publishes it to Cloudflare Pages (https://kitshoptt.pages.dev) on every push to main.
+# Needs one repository secret: CLOUDFLARE_API_TOKEN (Cloudflare Pages: Edit permission).
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: cloudflare-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 8f06019f6ba5cb22b3dccd1bcf085fea
+          command: pages deploy dist --project-name=kitshoptt --branch=main
