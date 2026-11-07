@@ -7,10 +7,19 @@
     "season": "2026",
     "type": "home",
     "price": 450,
-    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "image": "images/kits/tt-home-2026.svg",
     "description": "The Soca Warriors' red home shirt. Breathable fabric, crew neck, embroidered crest.",
-    "inStock": true
+    "inStock": true,
+    "color": "#c8102e",
+    "trim": "#111111",
+    "featured": true
   },
   {
     "id": "tt-away-2026",
@@ -20,10 +29,17 @@
     "season": "2026",
     "type": "away",
     "price": 450,
-    "sizes": ["M", "L", "XL"],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
     "image": "images/kits/tt-away-2026.svg",
     "description": "Clean white away shirt with red and black trim. A matchday classic.",
-    "inStock": true
+    "inStock": true,
+    "color": "#f5f3ee",
+    "trim": "#c8102e",
+    "featured": true
   },
   {
     "id": "defence-force-home-2026",
@@ -33,10 +49,18 @@
     "season": "2026/27",
     "type": "home",
     "price": 300,
-    "sizes": ["S", "M", "L", "XL"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
     "image": "images/kits/defence-force-home-2026.svg",
     "description": "Support the local giants. Lightweight home jersey for the new TTPFL season.",
-    "inStock": true
+    "inStock": true,
+    "color": "#1f3a2b",
+    "trim": "#e8c547",
+    "featured": false
   },
   {
     "id": "arsenal-home-2026",
@@ -46,10 +70,19 @@
     "season": "2026/27",
     "type": "home",
     "price": 550,
-    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "image": "images/kits/arsenal-home-2026.svg",
     "description": "Red body, white sleeves. The current Gunners home shirt.",
-    "inStock": true
+    "inStock": true,
+    "color": "#d0102c",
+    "trim": "#ffffff",
+    "featured": true
   },
   {
     "id": "liverpool-third-2026",
@@ -59,10 +92,16 @@
     "season": "2026/27",
     "type": "third",
     "price": 550,
-    "sizes": ["M", "L"],
+    "sizes": [
+      "M",
+      "L"
+    ],
     "image": "images/kits/liverpool-third-2026.svg",
     "description": "This season's third kit, for cup nights and European trips.",
-    "inStock": false
+    "inStock": false,
+    "color": "#2a2f45",
+    "trim": "#f2b84b",
+    "featured": false
   },
   {
     "id": "real-madrid-away-2026",
@@ -72,10 +111,18 @@
     "season": "2026/27",
     "type": "away",
     "price": 575,
-    "sizes": ["S", "M", "L", "XL"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
     "image": "images/kits/real-madrid-away-2026.svg",
     "description": "Dark away shirt with gold detailing.",
-    "inStock": true
+    "inStock": true,
+    "color": "#22263a",
+    "trim": "#c9a54a",
+    "featured": true
   },
   {
     "id": "barcelona-home-2026",
@@ -85,10 +132,18 @@
     "season": "2026/27",
     "type": "home",
     "price": 575,
-    "sizes": ["S", "M", "L", "XL"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
     "image": "images/kits/barcelona-home-2026.svg",
     "description": "Blaugrana stripes, current season home shirt.",
-    "inStock": true
+    "inStock": true,
+    "color": "#a50044",
+    "trim": "#004d98",
+    "featured": true
   },
   {
     "id": "argentina-home-2026",
@@ -98,10 +153,19 @@
     "season": "2026",
     "type": "home",
     "price": 525,
-    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "image": "images/kits/argentina-home-2026.svg",
     "description": "Sky blue and white stripes. World Cup 2026 edition.",
-    "inStock": true
+    "inStock": true,
+    "color": "#75aadb",
+    "trim": "#ffffff",
+    "featured": true
   },
   {
     "id": "brazil-retro-1970",
@@ -111,10 +175,17 @@
     "season": "1970",
     "type": "retro",
     "price": 400,
-    "sizes": ["M", "L", "XL"],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
     "image": "images/kits/brazil-retro-1970.svg",
     "description": "Canary yellow with green collar. A tribute to the greatest team of all time.",
-    "inStock": true
+    "inStock": true,
+    "color": "#f6d32d",
+    "trim": "#1d8a3e",
+    "featured": true
   },
   {
     "id": "man-utd-retro-1999",
@@ -124,10 +195,16 @@
     "season": "1998/99",
     "type": "retro",
     "price": 425,
-    "sizes": ["L", "XL"],
+    "sizes": [
+      "L",
+      "XL"
+    ],
     "image": "images/kits/man-utd-retro-1999.svg",
     "description": "Treble-winning season home shirt reissue, with the classic collar.",
-    "inStock": false
+    "inStock": false,
+    "color": "#d6111e",
+    "trim": "#ffffff",
+    "featured": false
   },
   {
     "id": "juventus-home-2026",
@@ -137,10 +214,17 @@
     "season": "2026/27",
     "type": "home",
     "price": 550,
-    "sizes": ["S", "M", "L"],
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
     "image": "images/kits/juventus-home-2026.svg",
     "description": "Black and white stripes, Bianconeri home shirt.",
-    "inStock": true
+    "inStock": true,
+    "color": "#f4f4f4",
+    "trim": "#111111",
+    "featured": false
   },
   {
     "id": "netherlands-retro-1988",
@@ -150,9 +234,17 @@
     "season": "1988",
     "type": "retro",
     "price": 400,
-    "sizes": ["S", "M", "L", "XL"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
     "image": "images/kits/netherlands-retro-1988.svg",
     "description": "Orange with the iconic geometric pattern. Euro '88 reissue.",
-    "inStock": true
+    "inStock": true,
+    "color": "#f36c21",
+    "trim": "#ffffff",
+    "featured": true
   }
 ]

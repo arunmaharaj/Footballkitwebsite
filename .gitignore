@@ -1,0 +1,5 @@
+node_modules
+dist
+.DS_Store
+# Test-only photos that must not be published (the repo is public)
+public/images/test-photos/

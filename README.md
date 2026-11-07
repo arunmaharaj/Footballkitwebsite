@@ -1,22 +1,20 @@
 # Football Kit Shop (browse-only)
 
-A static website for browsing football kits in Trinidad & Tobago. There's no checkout, no payments and no accounts. Visitors browse, pick a size, and tap **Enquire on WhatsApp**, which opens WhatsApp with a message that's already filled in.
+A catalogue website for a football kit shop in Trinidad & Tobago. No checkout, payments or accounts: visitors browse by league and team, pick a size, and tap **Enquire on WhatsApp**, which opens WhatsApp with a message ready to send.
 
-Plain HTML, CSS and JavaScript. No build step, no backend, no database.
+- **Featured rail** at the top: an interactive clothes rail of up to 8 kits marked `"featured": true`.
+- **Catalogue** below: league tabs, team / kit type / size / price / in-stock filters, search, sort, shareable links (`?league=La+Liga&team=Barcelona`, `?kit=tt-home-2026`).
 
-## Set your shop details
+Built with Vite, React, TypeScript, Tailwind CSS and the shadcn project structure. Deploys free on Netlify.
 
-Edit **`js/config.js`**:
+## Shop details
 
-```js
-name: "Kit Shop TT",
-whatsapp: "1868XXXXXXX",   // digits only, starting 1868, e.g. "18681234567"
-```
+Edit `src/config.ts`: shop name, tagline, WhatsApp number (digits only, starting `1868`), Instagram.
 
-## Add a kit (the only file you edit is `kits.json`)
+## Add a kit: edit `kits.json` only
 
-1. Put the photo in `images/kits/` (JPG, PNG or WebP; square photos look best, about 800×800).
-2. Open `kits.json` and copy an existing entry. Paste it in, add a comma between entries, and change the values:
+1. Put the photo in `public/images/kits/` (square JPG/PNG/WebP, about 800×800).
+2. Copy an entry in `kits.json`, paste it, and change the values:
 
 ```json
 {
@@ -30,46 +28,49 @@ whatsapp: "1868XXXXXXX",   // digits only, starting 1868, e.g. "18681234567"
   "sizes": ["S", "M", "L", "XL"],
   "image": "images/kits/tt-home-2026.jpg",
   "description": "Short description shown on the kit page.",
-  "inStock": true
+  "inStock": true,
+  "featured": true,
+  "color": "#c8102e",
+  "trim": "#111111"
 }
 ```
 
 | Field | Notes |
 |---|---|
-| `id` | Unique. Lowercase letters, numbers and dashes. Used in share links (`?kit=tt-home-2026`). |
-| `type` | One of `home`, `away`, `third`, `retro`. |
-| `price` | Number in TTD, no `$` or quotes. |
-| `sizes` | List of sizes in quotes. |
-| `inStock` | `true` or `false`. Sold-out kits still show, with a "Sold out" stamp and an "Ask about restock" button. |
+| `id` | Unique; lowercase letters, numbers and dashes. |
+| `league`, `team` | New leagues and teams appear in the tabs and filters automatically. |
+| `type` | `home`, `away`, `third` or `retro`. |
+| `price` | Number in TTD (no `$`). |
+| `inStock` | `false` shows a "Sold out" label and an "Ask about restock" button. |
+| `featured` | Optional. `true` hangs the kit on the rail (first 8 are used). |
+| `color`, `trim` | Optional. Shirt colours used to draw the kit on the rail. |
+| `cutout`, `cutoutBack` | Optional. Transparent cut-out photos (200×310 portrait canvas) to show on the rail instead of the drawing. |
 
-New leagues and sizes appear in the filters automatically. Kits show in the order they appear in the file (in-stock first).
+A missing comma or quote breaks the build; paste the file into https://jsonlint.com if unsure. Netlify shows the error and keeps the old version live.
 
-**Check your JSON:** a missing comma or quote breaks the whole catalogue. Paste the file into https://jsonlint.com before saving if you're unsure.
-
-You can edit `kits.json` and upload photos straight on GitHub (**Add file → Upload files**). Netlify redeploys automatically within a minute.
-
-## Preview on your computer
-
-`fetch` doesn't work when you open the file directly, so run a tiny local server from this folder:
+## Run it on your computer
 
 ```bash
-npx serve .
+npm install
+```
+
+```bash
+npm run dev
 ```
 
 ## Deploy on Netlify (free)
 
-1. On netlify.com: **Add new site → Import an existing project → GitHub**, then pick this repository.
-2. Leave the build command empty. The publish directory is `.` (already set in `netlify.toml`).
-3. Deploy. Every change pushed to `main` goes live automatically.
+New site → Import from GitHub → pick this repo. `netlify.toml` already sets the build command (`npm run build`) and publish folder (`dist`). Every push to `main` redeploys.
 
-## Files
+## Project layout
 
 ```
-index.html          page
-css/styles.css      design (retro matchday programme)
-js/config.js        shop name, WhatsApp number
-js/app.js           filters, kit popup, WhatsApp links
-kits.json           the catalogue
-images/kits/        kit photos (the included shirt drawings are placeholders)
-netlify.toml        Netlify settings
+kits.json                                  the catalogue
+src/config.ts                              shop name, WhatsApp number
+src/App.tsx                                page layout, filter state
+src/components/catalog/                    header, league tabs, filters, cards, kit popup, featured rail
+src/components/ui/product-rail-gallery.tsx clothing rail component (shadcn ui folder)
+src/lib/kits.ts                            filtering, sorting, WhatsApp messages
+src/index.css                              Tailwind + shadcn theme colours
+public/images/kits/                        kit photos (current ones are drawn placeholders)
 ```

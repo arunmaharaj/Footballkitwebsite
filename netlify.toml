@@ -1,11 +1,9 @@
-# Static site: no build step. Netlify publishes the repository root.
 [build]
-  publish = "."
+  command = "npm run build"
+  publish = "dist"
 
-[[headers]]
-  for = "/kits.json"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+[build.environment]
+  NODE_VERSION = "22"
 
 [[headers]]
   for = "/*"
