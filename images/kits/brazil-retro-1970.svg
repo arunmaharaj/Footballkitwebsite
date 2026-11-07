@@ -5,5 +5,5 @@
 <path d="M0 0 L62 0 L62 260 L0 260Z M178 0 L240 0 L240 260 L178 260Z" fill="#f6d32d"/>
 <path d="M18 78 L44 112 L50 104 L26 70Z M222 78 L196 112 L190 104 L214 70Z" fill="#1d8a3e"/></g>
 <path d="M95 22 Q120 50 145 22" fill="none" stroke="#1d8a3e" stroke-width="6" stroke-linecap="round"/>
-<path d="M60 40 L95 22 Q120 38 145 22 L180 40 L222 78 L196 112 L178 100 L178 238 L62 238 L62 100 L44 112 L18 78 Z" fill="none" stroke="#1b1f3b" stroke-opacity=".35" stroke-width="2"/>
+<path d="M60 40 L95 22 Q120 38 145 22 L180 40 L222 78 L196 112 L178 100 L178 238 L62 238 L62 100 L44 112 L18 78 Z" fill="none" stroke="#111827" stroke-opacity=".2" stroke-width="2"/>
 </svg>
