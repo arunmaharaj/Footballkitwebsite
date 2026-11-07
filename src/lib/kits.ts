@@ -26,7 +26,10 @@ export interface Kit {
   /** Shirt colours used to draw the kit on the featured rail when there is no cut-out photo. */
   color?: string;
   trim?: string;
-  featured?: boolean;
+  /** Shows the kit on the rail. A number sets its position (1 = first). */
+  featured?: boolean | number;
+  /** Set to false if the kit does not come in long sleeve. */
+  longSleeve?: boolean;
   /** Original position in kits.json, used for "Featured" sort order. */
   order: number;
 }
@@ -72,6 +75,11 @@ export const KITS: Kit[] = (raw as RawKit[])
 
 /** Leagues in the order they first appear in kits.json. */
 export const LEAGUES = [...new Set(KITS.map((k) => k.league))];
+
+export type Sleeve = "short" | "long";
+export const SLEEVE_LABEL: Record<Sleeve, string> = { short: "Short sleeve", long: "Long sleeve" };
+export const hasLongSleeve = (k: Kit) => k.longSleeve !== false;
+export const priceFor = (k: Kit, sleeve: Sleeve) => k.price + (sleeve === "long" ? SHOP.longSleeveExtra : 0);
 
 export const money = (n: number) => `TT$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 
@@ -164,10 +172,12 @@ export function filtersToUrl(f: Filters, kitId?: string | null) {
 const waNumber = SHOP.whatsapp.replace(/\D/g, "");
 export const waLink = (text: string) => `https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`;
 
-export function kitEnquiry(k: Kit, size?: string) {
+export function kitEnquiry(k: Kit, size?: string, sleeve: Sleeve = "short") {
   const link = `${window.location.origin}${window.location.pathname}?kit=${encodeURIComponent(k.id)}`;
   const sizeLine = size ? `Size: ${size}` : "Size: not sure yet";
+  const sleeveLine = hasLongSleeve(k) ? `\nSleeves: ${SLEEVE_LABEL[sleeve]}` : "";
+  const title = k.name.includes(k.season) ? k.name : `${k.name} (${k.season})`;
   return k.inStock
-    ? `Hi ${SHOP.name}! I'm interested in the ${k.name} (${k.season}).\n${sizeLine}\nPrice: ${money(k.price)}\nIs it available?\n${link}`
-    : `Hi ${SHOP.name}! The ${k.name} (${k.season}) shows as sold out. Will you be restocking it?\n${sizeLine}\n${link}`;
+    ? `Hi ${SHOP.name}! I'm interested in the ${title}.\n${sizeLine}${sleeveLine}\nPrice: ${money(priceFor(k, sleeve))}\nIs it available?\n${link}`
+    : `Hi ${SHOP.name}! The ${title} shows as sold out. Will you be restocking it?\n${sizeLine}${sleeveLine}\n${link}`;
 }

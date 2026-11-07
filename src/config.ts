@@ -6,4 +6,6 @@ export const SHOP = {
   whatsapp: "1868XXXXXXX",
   location: "Trinidad & Tobago",
   instagram: "", // optional, e.g. "https://instagram.com/yourshop"
+  // Extra charge in TTD for the long-sleeve version of a kit. 0 = same price (no extra shown).
+  longSleeveExtra: 0,
 };

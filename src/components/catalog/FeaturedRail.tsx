@@ -1,24 +1,14 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ClothingRailHero, type RailGarment } from "@/components/ui/product-rail-gallery";
-import { asset, kitEnquiry, money, waLink, type Kit } from "@/lib/kits";
-import { SizePicker } from "./KitDialog";
-import { WhatsAppButton } from "./WhatsAppButton";
-
-function RailEnquiry({ kit }: { kit: Kit }) {
-  const [size, setSize] = useState("");
-  return (
-    <div className="mt-2 flex flex-col items-center gap-3 md:items-start">
-      <SizePicker sizes={kit.sizes} value={size} onChange={setSize} />
-      <WhatsAppButton size="lg" href={waLink(kitEnquiry(kit, size))}>
-        {kit.inStock ? (size ? `Enquire about size ${size}` : "Enquire on WhatsApp") : "Ask about restock"}
-      </WhatsAppButton>
-    </div>
-  );
-}
+import { asset, money, type Kit } from "@/lib/kits";
+import { KitEnquiry } from "./KitDialog";
 
 /** Featured kits hung on the interactive rail. Uses cut-out photos when kits.json has them, otherwise draws the shirt in team colours. */
 export function FeaturedRail({ kits, onBrowse }: { kits: Kit[]; onBrowse: () => void }) {
-  const featured = useMemo(() => kits.filter((k) => k.featured).slice(0, 8), [kits]);
+  const featured = useMemo(
+    () => kits.filter((k) => k.featured).sort((a, b) => (Number(a.featured) || 99) - (Number(b.featured) || 99)).slice(0, 8),
+    [kits],
+  );
   const items: RailGarment[] = useMemo(
     () =>
       featured.map((k) => ({
@@ -44,7 +34,7 @@ export function FeaturedRail({ kits, onBrowse }: { kits: Kit[]; onBrowse: () => 
       heading="Fresh on the rail this week"
       caption="Slide the hangers, tap a shirt to take a closer look."
       autoplay
-      detailAction={(_, i) => <RailEnquiry kit={featured[i]!} />}
+      detailAction={(_, i) => <KitEnquiry key={featured[i]!.id} kit={featured[i]!} align="center" />}
       action={
         <button type="button" onClick={onBrowse} className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background shadow-sm transition hover:-translate-y-px hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
           Browse all kits by league

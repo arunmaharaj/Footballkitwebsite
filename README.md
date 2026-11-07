@@ -9,7 +9,7 @@ Built with Vite, React, TypeScript, Tailwind CSS and the shadcn project structur
 
 ## Shop details
 
-Edit `src/config.ts`: shop name, tagline, WhatsApp number (digits only, starting `1868`), Instagram.
+Edit `src/config.ts`: shop name, tagline, WhatsApp number (digits only, starting `1868`), Instagram, and `longSleeveExtra` (extra TTD charged for long sleeve; `0` means same price).
 
 ## Add a kit: edit `kits.json` only
 
@@ -43,7 +43,8 @@ Edit `src/config.ts`: shop name, tagline, WhatsApp number (digits only, starting
 | `type` | `home`, `away`, `third`, `special` (anniversary, centenary, pre-season…) or `retro`. |
 | `price` | Number in TTD (no `$`). |
 | `inStock` | `false` shows a "Sold out" label and an "Ask about restock" button. |
-| `featured` | Optional. `true` hangs the kit on the rail (first 8 are used). |
+| `featured` | Optional. Hangs the kit on the rail (8 max). Use a number to set the order: `1` is first. |
+| `longSleeve` | Optional. Every kit offers a Short/Long sleeve choice; set `false` for kits that only come short-sleeved. |
 | `color`, `trim` | Optional. Shirt colours used to draw the kit on the rail. |
 | `imageBack` | Optional photo of the back; shown on hover and with the Front/Back switch. |
 | `cutout`, `cutoutBack` | Optional. Transparent cut-out photos (200×310 portrait canvas) to show on the rail instead of the drawing. |

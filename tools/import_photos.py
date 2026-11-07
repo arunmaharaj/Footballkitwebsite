@@ -202,11 +202,13 @@ def cutout(path, dest, W=400, H=620):
     return True
 
 # ---------- build ----------
-FEATURED = {
-    ("arsenal-fc", "2026-27", "home"), ("real-madrid", "2026-27", "home"), ("fc-barcelona", "2026-27", "home"),
-    ("ac-milan", "2026-27", "home"), ("bayern-munchen", "2026-27", "home"), ("paris-saint-germain", "2026-27", "home"),
-    ("argentina", "2026", "home"), ("brazil", "2026", "home"),
-}
+# Rail kits, most popular first (the rail shows them in this order).
+FEATURED_ORDER = [
+    ("real-madrid", "2026-27", "home"), ("fc-barcelona", "2026-27", "home"), ("manchester-united", "2026-27", "home"),
+    ("arsenal-fc", "2026-27", "home"), ("argentina", "2026", "home"), ("brazil", "2026", "home"),
+    ("bayern-munchen", "2026-27", "home"), ("paris-saint-germain", "2026-27", "home"),
+]
+FEATURED = set(FEATURED_ORDER)
 LEAGUE_ORDER = ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1", "Other Leagues", "International"]
 TYPE_ORDER = {"home": 0, "away": 1, "third": 2, "special": 3, "retro": 4}
 
@@ -243,7 +245,7 @@ for (team, season, rest), files in kits.items():
         ok = cutout(files["front"], os.path.join(OUT, "rail", f"{kid}.webp"))
         okb = "back" in files and cutout(files["back"], os.path.join(OUT, "rail", f"{kid}-back.webp"))
         if ok:
-            e["featured"] = True
+            e["featured"] = FEATURED_ORDER.index((team, season, rest)) + 1
             e["cutout"] = f"images/test-photos/rail/{kid}.webp"
             if okb:
                 e["cutoutBack"] = f"images/test-photos/rail/{kid}-back.webp"

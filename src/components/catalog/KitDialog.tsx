@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import { asset, BADGES, kitEnquiry, money, TYPE_LABEL, waLink, type Kit } from "@/lib/kits";
+import { SHOP } from "@/config";
+import { asset, BADGES, hasLongSleeve, kitEnquiry, money, priceFor, SLEEVE_LABEL, TYPE_LABEL, waLink, type Kit, type Sleeve } from "@/lib/kits";
 import { cn } from "@/lib/utils";
 import { WhatsAppButton } from "./WhatsAppButton";
 
@@ -26,16 +27,63 @@ export function SizePicker({ sizes, value, onChange }: { sizes: string[]; value:
   );
 }
 
+export function SleevePicker({ value, onChange }: { value: Sleeve; onChange: (s: Sleeve) => void }) {
+  return (
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Sleeves">
+      {(["short", "long"] as const).map((s) => (
+        <button
+          key={s}
+          type="button"
+          aria-pressed={value === s}
+          onClick={() => onChange(s)}
+          className={cn(
+            "h-11 rounded-lg border px-4 text-sm font-medium transition-colors",
+            value === s ? "border-foreground bg-foreground text-background" : "border-input bg-card hover:border-foreground",
+          )}
+        >
+          {SLEEVE_LABEL[s]}
+          {s === "long" && SHOP.longSleeveExtra > 0 && <span className="ml-1 opacity-70">+{money(SHOP.longSleeveExtra)}</span>}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Size + sleeve pickers and the WhatsApp button, shared by the kit popup and the rail popup. */
+export function KitEnquiry({ kit, align = "start" }: { kit: Kit; align?: "start" | "center" }) {
+  const [size, setSize] = useState(kit.sizes.length === 1 ? kit.sizes[0]! : "");
+  const [sleeve, setSleeve] = useState<Sleeve>("short");
+  const long = hasLongSleeve(kit);
+  const label = cn("text-sm font-semibold", align === "center" && "max-md:text-center");
+  return (
+    <div className={cn("flex flex-col gap-2", align === "center" && "max-md:items-center")}>
+      {long && SHOP.longSleeveExtra > 0 && <p className="text-2xl font-bold">{money(priceFor(kit, sleeve))}</p>}
+      <p className={label}>Size</p>
+      <SizePicker sizes={kit.sizes} value={size} onChange={setSize} />
+      {long && (
+        <>
+          <p className={cn(label, "mt-2")}>Sleeves</p>
+          <SleevePicker value={sleeve} onChange={setSleeve} />
+        </>
+      )}
+      <WhatsAppButton size="lg" href={waLink(kitEnquiry(kit, size, sleeve))} className="mt-3">
+        {kit.inStock ? (size ? `Enquire about size ${size}${long && sleeve === "long" ? ", long sleeve" : ""}` : "Enquire on WhatsApp") : "Ask about restock"}
+      </WhatsAppButton>
+      <p className="text-sm text-muted-foreground">
+        {kit.inStock ? (size ? "Opens WhatsApp with your message ready to send." : "Pick a size, or just ask us.") : "Sold out right now. Message us and we'll tell you when it's back."}
+      </p>
+    </div>
+  );
+}
+
 export function KitDialog({ kit, onClose }: { kit: Kit | null; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const [size, setSize] = useState("");
   const [back, setBack] = useState(false);
 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
     if (kit) {
-      setSize(kit.sizes.length === 1 ? kit.sizes[0]! : "");
       setBack(false);
       if (!d.open) d.showModal();
     } else if (d.open) d.close();
@@ -87,16 +135,9 @@ export function KitDialog({ kit, onClose }: { kit: Kit | null; onClose: () => vo
               </span>
             </p>
             {kit.description && <p className="mb-2 text-[15px] leading-relaxed">{kit.description}</p>}
-            <p className="text-sm font-semibold">Size</p>
-            <div className="mb-3"><SizePicker sizes={kit.sizes} value={size} onChange={setSize} /></div>
-            <WhatsAppButton size="lg" href={waLink(kitEnquiry(kit, size))}>
-              {kit.inStock ? (size ? `Enquire about size ${size}` : "Enquire on WhatsApp") : "Ask about restock"}
-            </WhatsAppButton>
-            <p className="text-sm text-muted-foreground">
-              {kit.inStock ? (size ? "Opens WhatsApp with your message ready to send." : "Pick a size, or just ask us.") : "Sold out right now. Message us and we'll tell you when it's back."}
-            </p>
+            <KitEnquiry key={kit.id} kit={kit} />
             <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 border-t border-border pt-3 text-sm">
-              {[["Team", kit.team], ["League", kit.group ? `${kit.group} (${kit.league})` : kit.league], ["Season", kit.season], ["Kit", TYPE_LABEL[kit.type] ?? kit.type]].map(([a, b]) => (
+              {[["Team", kit.team], ["League", kit.group ? `${kit.group} (${kit.league})` : kit.league], ["Season", kit.season], ["Kit", TYPE_LABEL[kit.type] ?? kit.type], ...(hasLongSleeve(kit) ? [["Sleeves", "Short or long"]] : [])].map(([a, b]) => (
                 <div key={a} className="contents"><dt className="text-muted-foreground">{a}</dt><dd>{b}</dd></div>
               ))}
             </dl>

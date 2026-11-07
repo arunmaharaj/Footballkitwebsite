@@ -18,7 +18,7 @@
     "description": "",
     "inStock": true,
     "imageBack": "images/test-photos/kits/arsenal-fc-2026-27-home-back.webp",
-    "featured": true,
+    "featured": 4,
     "cutout": "images/test-photos/rail/arsenal-fc-2026-27-home.webp",
     "cutoutBack": "images/test-photos/rail/arsenal-fc-2026-27-home-back.webp"
   },
@@ -560,7 +560,10 @@
     "image": "images/test-photos/kits/manchester-united-2026-27-home.webp",
     "description": "",
     "inStock": true,
-    "imageBack": "images/test-photos/kits/manchester-united-2026-27-home-back.webp"
+    "imageBack": "images/test-photos/kits/manchester-united-2026-27-home-back.webp",
+    "featured": 3,
+    "cutout": "images/test-photos/rail/manchester-united-2026-27-home.webp",
+    "cutoutBack": "images/test-photos/rail/manchester-united-2026-27-home-back.webp"
   },
   {
     "id": "manchester-united-2026-27-away",
@@ -781,7 +784,7 @@
     "description": "",
     "inStock": true,
     "imageBack": "images/test-photos/kits/fc-barcelona-2026-27-home-back.webp",
-    "featured": true,
+    "featured": 2,
     "cutout": "images/test-photos/rail/fc-barcelona-2026-27-home.webp",
     "cutoutBack": "images/test-photos/rail/fc-barcelona-2026-27-home-back.webp"
   },
@@ -999,7 +1002,7 @@
     "description": "",
     "inStock": true,
     "imageBack": "images/test-photos/kits/real-madrid-2026-27-home-back.webp",
-    "featured": true,
+    "featured": 1,
     "cutout": "images/test-photos/rail/real-madrid-2026-27-home.webp",
     "cutoutBack": "images/test-photos/rail/real-madrid-2026-27-home-back.webp"
   },
@@ -1198,10 +1201,7 @@
     "image": "images/test-photos/kits/ac-milan-2026-27-home.webp",
     "description": "",
     "inStock": true,
-    "imageBack": "images/test-photos/kits/ac-milan-2026-27-home-back.webp",
-    "featured": true,
-    "cutout": "images/test-photos/rail/ac-milan-2026-27-home.webp",
-    "cutoutBack": "images/test-photos/rail/ac-milan-2026-27-home-back.webp"
+    "imageBack": "images/test-photos/kits/ac-milan-2026-27-home-back.webp"
   },
   {
     "id": "ac-milan-2026-27-away",
@@ -1600,7 +1600,7 @@
     "description": "",
     "inStock": true,
     "imageBack": "images/test-photos/kits/bayern-munchen-2026-27-home-back.webp",
-    "featured": true,
+    "featured": 7,
     "cutout": "images/test-photos/rail/bayern-munchen-2026-27-home.webp",
     "cutoutBack": "images/test-photos/rail/bayern-munchen-2026-27-home-back.webp"
   },
@@ -1963,7 +1963,7 @@
     "description": "",
     "inStock": true,
     "imageBack": "images/test-photos/kits/paris-saint-germain-2026-27-home-back.webp",
-    "featured": true,
+    "featured": 8,
     "cutout": "images/test-photos/rail/paris-saint-germain-2026-27-home.webp",
     "cutoutBack": "images/test-photos/rail/paris-saint-germain-2026-27-home-back.webp"
   },
@@ -3719,7 +3719,7 @@
     "description": "",
     "inStock": true,
     "imageBack": "images/test-photos/kits/argentina-2026-home-back.webp",
-    "featured": true,
+    "featured": 5,
     "cutout": "images/test-photos/rail/argentina-2026-home.webp",
     "cutoutBack": "images/test-photos/rail/argentina-2026-home-back.webp"
   },
@@ -3931,7 +3931,7 @@
     "description": "",
     "inStock": true,
     "imageBack": "images/test-photos/kits/brazil-2026-home-back.webp",
-    "featured": true,
+    "featured": 6,
     "cutout": "images/test-photos/rail/brazil-2026-home.webp",
     "cutoutBack": "images/test-photos/rail/brazil-2026-home-back.webp"
   },
